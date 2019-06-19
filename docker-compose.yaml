@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password --init-file /init.sql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    ports:
+      - ${EXTERNAL_MYSQL_PORT}:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./docker/mysql/init.sql:/init.sql
+
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/golang/Dockerfile
+    ports:
+      - ${EXTERNAL_PORT}:8080
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: root:example@tcp(db:3306)/trading_history?charset=utf8&parseTime=True&loc=Local
