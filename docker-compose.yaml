@@ -12,6 +12,7 @@ services:
     volumes:
       - ./mysql:/var/lib/mysql
       - ./docker/mysql/init.sql:/init.sql
+    container_name: trading-history-mysql
 
   app:
     build:
